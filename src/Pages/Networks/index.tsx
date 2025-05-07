@@ -6,7 +6,7 @@ import { dataBase } from "../../Services/firebaseConnection"
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 
 export const Networks = ( ) => {
-    const [facebook, setFacebook] = useState('')
+    const [github, setGithub] = useState('')
     const [instagram, setInstagram] = useState('')
     const [youtube, setYoutube] = useState('')
 
@@ -17,7 +17,7 @@ export const Networks = ( ) => {
             .then((snapshot) => {
                 console.log(snapshot)
                 if(snapshot.data() !== undefined){
-                    setFacebook(snapshot.data()?.facebook)
+                    setGithub(snapshot.data()?.github)
                     setInstagram(snapshot.data()?.instagram)
                     setYoutube(snapshot.data()?.youtube)
                 }
@@ -34,7 +34,7 @@ export const Networks = ( ) => {
         e.preventDefault()
         
         setDoc(doc(dataBase, 'social', 'link'), {
-            facebook: facebook,
+            github: github,
             instagram: instagram,
             youtube: youtube,
         })
@@ -56,10 +56,10 @@ export const Networks = ( ) => {
             <form onSubmit={handleSaveLinks} className="flex flex-col max-w-xl w-full">
                 <label className="text-white font-medium mt-2 mb-2"> Link do Facebook: </label>
                 <Input
-                placeholder="Digite a url do Facebook"
+                placeholder="Digite a url do Github"
                 type="url"
-                value={facebook}
-                onChange={ (e) => setFacebook(e.target.value) }
+                value={github}
+                onChange={ (e) => setGithub(e.target.value) }
                 />
 
 
