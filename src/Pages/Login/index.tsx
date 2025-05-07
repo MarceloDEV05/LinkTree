@@ -20,7 +20,7 @@ export const Login = () => {
         }
 
         signInWithEmailAndPassword(auth, email, password)
-        .then(()  => {
+        .then(() => {
             console.log('Logado com sucesso')
             navigate("/admin",{
                 replace: true
