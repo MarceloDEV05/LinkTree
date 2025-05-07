@@ -1,6 +1,8 @@
 import { Header } from "../../components/Header"
 import { Input } from "../../components/Input"
 import { useState,  } from "react"
+import { FaLink } from "react-icons/fa"
+import { FiTrash } from "react-icons/fi"
 
 export const Admin = () => {
     const [nameInput, setNameInput] = useState('')
@@ -80,9 +82,22 @@ export const Admin = () => {
                 <button 
                 type="submit"
                 className="bg-blue-600 h-9 rounded-md text-white gap-4 font-medium flex justify-center items-center mb-7">
-                    Cadastrar
+                    Cadastrar<span> <FaLink/> </span>
                 </button>
             </form>
+
+            <h2 className="font-bold text-white mb-4 text-2xl">Meus Links</h2>
+            <article className="flex items-center justify-between w-11/12 max-w-xl rounded py-3 px-2 mb-2 select-none" style={{backgroundColor: "#2563eb", color: "#000"}}>
+                <p>canal do youtube</p>
+                <div>
+                    <button
+                    className="border border-dashed p1 rounded"
+                    > 
+                    
+                    <FiTrash size={18} color="#fff"/>
+                    </button>
+                </div>
+            </article>
         </div>
     )
 }
