@@ -1,20 +1,85 @@
 import { Header } from "../../components/Header"
 import { Input } from "../../components/Input"
-import { useState,  } from "react"
+import { useState, type FormEvent, useEffect } from "react"
 import { FaLink } from "react-icons/fa"
 import { FiTrash } from "react-icons/fi"
+import { dataBase } from "../../Services/firebaseConnection"
+import { addDoc, collection,onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore'
+
+interface LinkProps{
+    id:string;
+    name:string;
+    url:string;
+    bg:string;
+    color:string;
+}
 
 export const Admin = () => {
     const [nameInput, setNameInput] = useState('')
     const [urlInput, setUrlInput] = useState('')
     const [textColorInput, setTextColorInput] = useState('#fff')
     const [backgroundColorInput, setBackgroundColorInput] = useState('#000')
+    const [links, setLinks] = useState<LinkProps[]>([])
 
+    useEffect(() => {
+        const linksRef = collection(dataBase, 'Links')
+        const queryRef = query(linksRef, orderBy('created', 'asc'))
+
+        const unsub = onSnapshot(queryRef, (snapshot) => {
+            let list = [] as LinkProps[]
+            snapshot.forEach((doc) => {
+                list.push({
+                    id:doc.id,
+                    name:doc.data().name,
+                    url: doc.data().url,
+                    bg:doc.data().bg ,
+                    color: doc.data().color
+
+                })
+            })
+            setLinks(list)
+            console.log(list)
+        })
+
+        return () => {
+            unsub()
+        }
+    }, [])
+
+    const register = async(e: FormEvent) => {
+        e.preventDefault()
+        
+        if(nameInput === '' || urlInput === ''){
+            alert('preencha todos os campos')
+            return;
+        }
+
+        await addDoc(collection(dataBase, 'Links'), {
+            name: nameInput,
+            url: urlInput,
+            bg: backgroundColorInput,
+            color: textColorInput,
+            created: new Date()
+        })
+        .then(() => {
+            setNameInput('')
+            setUrlInput('')
+        })
+        .catch((error) => {
+            console.log('erro ao cadastrar no banco' + error)
+        })
+        
+    }
+
+    const deleteLink = async(id:string) => {
+        const docRef = doc(dataBase, 'Links', id)
+        await deleteDoc(docRef)
+    }
 
     return(
        <div className="flex items-center flex-col h-screen pb-7 px-2">
          <Header/>
-           <form className="flex flex-col mt-8 mb-3 w-full max-w-xl">
+           <form onSubmit={register} className="flex flex-col mt-8 mb-3 w-full max-w-xl">
              <label 
               className="text-white font-medium mt-2 mb-2">
                Nome do Link: 
@@ -85,19 +150,23 @@ export const Admin = () => {
                     Cadastrar<span> <FaLink/> </span>
                 </button>
             </form>
-
             <h2 className="font-bold text-white mb-4 text-2xl">Meus Links</h2>
-            <article className="flex items-center justify-between w-11/12 max-w-xl rounded py-3 px-2 mb-2 select-none" style={{backgroundColor: "#2563eb", color: "#000"}}>
-                <p>canal do youtube</p>
-                <div>
-                    <button
-                    className="border border-dashed p1 rounded"
-                    > 
-                    
-                    <FiTrash size={18} color="#fff"/>
-                    </button>
-                </div>
-            </article>
+
+            {links.map((link) => (
+               <article key={link.id} className="flex items-center justify-between w-11/12 max-w-xl rounded py-3 px-2 mb-2 select-none" style={{backgroundColor: link.bg, color: link.color}}>
+
+                    <p>{link.name}</p>
+                    <div>
+                        <button
+                        className="border border-dashed p1 rounded "
+                        onClick={() => deleteLink (link.id)}
+                        > 
+                        
+                        <FiTrash size={18} color="#fff"/>
+                        </button>
+                    </div>
+                </article>
+            ))}
         </div>
     )
 }
