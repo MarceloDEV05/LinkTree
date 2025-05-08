@@ -35,10 +35,10 @@ export const Login = () => {
         <div className="w-full flex flex-col h-screen items-center justify-center">
             <Link to="/">
                 <h1 className="mt-11 text-white mb-7 font-bold text-5xl">
-                    Dev
+                       Tree
                     <span 
                     className="bg-gradient-to-r from-yellow-500 to-orange-400  bg-clip-text text-transparent">
-                        Link
+                        Links
                         </span>
                 </h1>
             </Link>
